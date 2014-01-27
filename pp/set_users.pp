@@ -25,15 +25,15 @@ $manage_rep_password = $::rep_password
 $db_user = $::db_username
 $manage_db_password = $::db_password
 
-exec { "mysql_start":
-  command => '/etc/init.d/mysql start',
+service { 'mysql':
+  ensure => 'running',
 }
 
 
 define removeMysqlUser (
   $user = $title
 ) {
-  Exec["mysql_start"] -> RemoveMysqlUser["$title"]
+  Service["mysql"] -> RemoveMysqlUser["$title"]
   
   mysql_user { "$title":
     name => "$user",
@@ -45,7 +45,7 @@ define addMysqlUser (
   $user = $title,
   $password = ""
 ) {
-  Exec["mysql_start"] -> AddMysqlUser["$title"]
+  Service["mysql"] -> AddMysqlUser["$title"]
   
   mysql_user { "$title":
     name => "$user",
@@ -75,7 +75,6 @@ addMysqlUser { "${db_user}@%": password => "$manage_db_password",}
 grantAll { [ "${rep_user}@%", "${db_user}@%" ]: }
 
 
-exec { '/etc/init.d/mysql stop':
+exec { "/etc/init.d/mysql stop":
   require => [ Mysql_grant["$db_user@%"], Mysql_grant["$rep_user@%"] ],
 }
-

@@ -24,10 +24,10 @@ cd $(dirname $0)
 echo Installing Puppet modules...
 puppet apply pp/install-modules.pp
 echo Installing packages...
-puppet apply pp/install-packages.pp
 export FACTER_REP_USERNAME=$rep_username
 export FACTER_REP_PASSWORD=$rep_password
 export FACTER_DB_USERNAME=$db_username
 export FACTER_DB_PASSWORD=$db_password
+puppet apply pp/install-packages.pp
 echo Setting up MariaDB users...
 puppet apply pp/set_users.pp

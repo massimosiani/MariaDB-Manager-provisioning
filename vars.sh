@@ -32,3 +32,12 @@ export rep_username=repuser
 export rep_password=repuser1
 export db_username=dbuser
 export db_password=dbuser1
+
+if [ -f /usr/lib64/galera/libgalera_smm.so ] ; then
+    FACTER_WSREP_PROVIDER=/usr/lib64/galera/libgalera_smm.so
+elif [ -f /usr/lib/galera/libgalera_smm.so ] ; then
+    FACTER_WSREP_PROVIDER=/usr/lib/galera/libgalera_smm.so
+else
+    FACTER_WSREP_PROVIDER="N/A"
+fi
+export FACTER_WSREP_PROVIDER

@@ -22,10 +22,11 @@ $manage_modulepath = $::modulepath ? {
   /w+/ => $::modulepath,
   default => "/etc/puppet/modules",
 }
-$manage_home = $::home ? {
+$manage_source_dir = $::home ? {
   /.+/ => $::home,
   default => "/root",
 }
+$manage_package_name = "MariaDB-Manager-provisioning"
 
 define puppetLocalModule {
     file { "puppet-${title}":
@@ -35,7 +36,7 @@ define puppetLocalModule {
         purge => true,
         recurse => true,
         replace => true,
-        source => "${manage_home}/puppet-${title}-master",
+        source => "${manage_source_dir}/${manage_package_name}/puppet-${title}-master",
     }
 }
 

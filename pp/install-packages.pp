@@ -31,6 +31,11 @@ $manage_netcat = $::osfamily ? {
 
 $packages_needed = [ "curl", "percona-xtrabackup", "$manage_netcat", "$mariadb_client" ]
 
+$manage_mysql_conf_dir = $::osfamily ? {
+  /(?i)(redhat)/ => "/etc/my.cnf.d",
+  /(?i)(debian)/ => "/etc/mysql/conf.d",
+}
+
 class { 'mariadb':
     version => '5.5',
     galera_install => true,
@@ -43,20 +48,23 @@ package { $packages_needed:
     require => Class['mariadb'],
 }
 
-file { 'my.cnf.d':
+file { 'conf.dir':
     ensure => directory,
-    path => '/etc/my.cnf.d',
+    path => "$manage_mysql_conf_dir",
     before => File['skysql-galera'],
 }
 
 file { 'skysql-galera':
     ensure => present,
-    path => '/etc/my.cnf.d/skysql-galera-puppet.cnf',
+    path => "${manage_mysql_conf_dir}/skysql-galera-puppet.cnf",
     content => template('mariadb/skysql-galera.erb'),
     require => Class['mariadb'],
 }
 
-exec { 'datadir':
-    command => "/bin/echo [mysqld] >> /etc/my.cnf ; /bin/echo datadir=/var/lib/mysql >> /etc/my.cnf",
-    require => Class['mariadb'],
+# Debian does seem to explicitly include the datadir option by default
+if $::osfamily =~ /(?i)(redhat)/ {
+  exec { 'datadir':
+      command => "/bin/echo [mysqld] >> /etc/my.cnf ; /bin/echo datadir=/var/lib/mysql >> /etc/my.cnf",
+      require => Class['mariadb'],
+  }
 }
