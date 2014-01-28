@@ -42,7 +42,7 @@ if [[ "$osfamily" == "debian" ]] ; then
     fi
     sudo aptitude update
     sudo aptitude -y install puppet
-elif [[ "x$osfamily" == "redhat" ]] ; then
+elif [[ "$osfamily" == "redhat" ]] ; then
     sudo rpm -ivh https://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-7.noarch.rpm
     sudo rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm
     sudo yum -y install puppet
