@@ -130,12 +130,12 @@ class mariadb (
 
 
   # Resources managed
-  if $mariadb::galera_install {
-    include mariadb::galera
-  }
-
   if $mariadb::repo_class {
     include $mariadb::repo_class
+  }
+
+  if $mariadb::galera_install {
+    include mariadb::galera
   }
 
   if $mariadb::manage_package_name {
