@@ -27,6 +27,7 @@ $manage_db_password = $::db_password
 
 service { 'mysql':
   ensure => 'running',
+  start => ' su mysql /etc/init.d/mysql start',
 }
 
 
@@ -76,5 +77,5 @@ grantAll { [ "${rep_user}@%", "${db_user}@%" ]: }
 
 
 exec { "/etc/init.d/mysql stop":
-  require => [ Mysql_grant["$db_user@%"], Mysql_grant["$rep_user@%"] ],
+  require => [ Mysql_grant["$db_user@%"], Mysql_grant["$rep_user@%"], RemoveMysqlUser["@localhost"], RemoveMysqlUser["@$::hostname"] ],
 }

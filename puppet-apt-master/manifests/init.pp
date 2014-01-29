@@ -30,7 +30,7 @@ class apt(
   $purge_sources_list   = false,
   $purge_sources_list_d = false,
   $purge_preferences_d  = false,
-  $update_timeout       = '300'
+  $update_timeout       = undef
 ) {
 
   include apt::params
