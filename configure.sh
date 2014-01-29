@@ -29,5 +29,6 @@ export FACTER_REP_PASSWORD=$rep_password
 export FACTER_DB_USERNAME=$db_username
 export FACTER_DB_PASSWORD=$db_password
 puppet apply pp/install-packages.pp
+. ./vars.sh
 echo Setting up MariaDB users...
 puppet apply pp/set_users.pp

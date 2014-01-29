@@ -25,6 +25,13 @@ $manage_rep_password = $::rep_password
 $db_user = $::db_username
 $manage_db_password = $::db_password
 
+file { 'skysql-galera':
+    ensure => present,
+    path => "${manage_mysql_conf_dir}/skysql-galera-puppet.cnf",
+    content => template('mariadb/skysql-galera.erb'),
+    before => Service['mysql'],
+}
+
 service { 'mysql':
   ensure => 'running',
   start => ' su mysql /etc/init.d/mysql start',

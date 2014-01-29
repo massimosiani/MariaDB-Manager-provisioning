@@ -54,13 +54,6 @@ file { 'conf.dir':
     before => File['skysql-galera'],
 }
 
-file { 'skysql-galera':
-    ensure => present,
-    path => "${manage_mysql_conf_dir}/skysql-galera-puppet.cnf",
-    content => template('mariadb/skysql-galera.erb'),
-    require => Class['mariadb'],
-}
-
 # Debian does seem to explicitly include the datadir option by default
 if $::osfamily =~ /(?i)(redhat)/ {
   exec { 'datadir':
