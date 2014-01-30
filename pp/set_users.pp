@@ -25,6 +25,17 @@ $manage_rep_password = $::rep_password
 $db_user = $::db_username
 $manage_db_password = $::db_password
 
+$manage_mysql_conf_dir = $::osfamily ? {
+  /(?i)(redhat)/ => "/etc/my.cnf.d",
+  /(?i)(debian)/ => "/etc/mysql/conf.d",
+}
+
+file { 'conf.dir':
+    ensure => directory,
+    path => "$manage_mysql_conf_dir",
+    before => File['skysql-galera'],
+}
+
 file { 'skysql-galera':
     ensure => present,
     path => "${manage_mysql_conf_dir}/skysql-galera-puppet.cnf",

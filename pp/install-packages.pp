@@ -31,11 +31,6 @@ $manage_netcat = $::osfamily ? {
 
 $packages_needed = [ "curl", "percona-xtrabackup", "$manage_netcat", "$mariadb_client" ]
 
-$manage_mysql_conf_dir = $::osfamily ? {
-  /(?i)(redhat)/ => "/etc/my.cnf.d",
-  /(?i)(debian)/ => "/etc/mysql/conf.d",
-}
-
 class { 'mariadb':
     version => '5.5',
     galera_install => true,
@@ -46,11 +41,6 @@ class { 'mariadb':
 package { $packages_needed:
     ensure => "present",
     require => Class['mariadb'],
-}
-
-file { 'conf.dir':
-    ensure => directory,
-    path => "$manage_mysql_conf_dir",
 }
 
 # Debian does seem to explicitly include the datadir option by default
