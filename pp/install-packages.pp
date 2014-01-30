@@ -51,7 +51,6 @@ package { $packages_needed:
 file { 'conf.dir':
     ensure => directory,
     path => "$manage_mysql_conf_dir",
-    before => File['skysql-galera'],
 }
 
 # Debian does seem to explicitly include the datadir option by default
