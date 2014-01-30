@@ -131,7 +131,9 @@ class mariadb (
 
   # Resources managed
   if $mariadb::repo_class {
-    include $mariadb::repo_class
+    class { "$mariadb::repo_class":
+      before   => Package["$mariadb::manage_package_name"],
+    }
   }
 
   if $mariadb::galera_install {
