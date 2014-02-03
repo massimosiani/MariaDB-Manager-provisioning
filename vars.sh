@@ -27,7 +27,7 @@ refresh_variables() {
 
     export FACTER_MODULEPATH=${tmp1}
 
-    export FACTER_HOME=$(cd; pwd)
+    export FACTER_HOME=$(cd .. ; pwd)
 
     export FACTER_REP_USERNAME=$1
     export FACTER_REP_PASSWORD=$2
