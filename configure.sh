@@ -16,19 +16,22 @@
 #
 # Author: Massimo Siani
 # Date: January 2014
+#
+# Parameters:
+# $1:		Replication username
+# $2:		Replication password
+# $3:		Database username (root is removed)
+# $4:		Database password
 
 
 cd $(dirname $0)
 . ./vars.sh
+refresh_variables
 
 echo Installing Puppet modules...
 puppet apply pp/install-modules.pp
 echo Installing packages...
-export FACTER_REP_USERNAME=$rep_username
-export FACTER_REP_PASSWORD=$rep_password
-export FACTER_DB_USERNAME=$db_username
-export FACTER_DB_PASSWORD=$db_password
 puppet apply pp/install-packages.pp
-. ./vars_wsrep.sh
+refresh_variables $1 $2 $3 $4
 echo Setting up MariaDB users...
 puppet apply pp/set_users.pp

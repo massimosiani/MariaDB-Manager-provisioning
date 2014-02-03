@@ -20,24 +20,26 @@
 # Date: January 2014
 
 
-tmp=$(puppet config print modulepath)
-tmp1=${tmp##*:}
-mkdir -p $tmp1
+refresh_variables() {
+    tmp=$(puppet config print modulepath)
+    tmp1=${tmp##*:}
+    mkdir -p $tmp1
 
-export FACTER_MODULEPATH=${tmp1}
+    export FACTER_MODULEPATH=${tmp1}
 
-export FACTER_HOME=$(cd; pwd)
+    export FACTER_HOME=$(cd; pwd)
 
-export rep_username=repuser
-export rep_password=repuser1
-export db_username=dbuser
-export db_password=dbuser1
+    export FACTER_REP_USERNAME=$1
+    export FACTER_REP_PASSWORD=$2
+    export FACTER_DB_USERNAME=$3
+    export FACTER_DB_PASSWORD=$4
 
-if [ -f /usr/lib64/galera/libgalera_smm.so ] ; then
-    FACTER_WSREP_PROVIDER=/usr/lib64/galera/libgalera_smm.so
-elif [ -f /usr/lib/galera/libgalera_smm.so ] ; then
-    FACTER_WSREP_PROVIDER=/usr/lib/galera/libgalera_smm.so
-else
-    FACTER_WSREP_PROVIDER="N/A"
-fi
-export FACTER_WSREP_PROVIDER
+    if [ -f /usr/lib64/galera/libgalera_smm.so ] ; then
+        FACTER_WSREP_PROVIDER=/usr/lib64/galera/libgalera_smm.so
+    elif [ -f /usr/lib/galera/libgalera_smm.so ] ; then
+        FACTER_WSREP_PROVIDER=/usr/lib/galera/libgalera_smm.so
+    else
+        FACTER_WSREP_PROVIDER="N/A"
+    fi
+    export FACTER_WSREP_PROVIDER
+}
