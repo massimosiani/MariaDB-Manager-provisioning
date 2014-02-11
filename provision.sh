@@ -30,10 +30,18 @@
 
 # small usage help
 if [[ $# -lt 1 ]] ; then
+    echo
     echo "Usage: $(basename $0) [OPTIONS] <[user@]node IP> <MariaDB Galera cluster IP>"
-    echo "The MariaDB Galera cluster Ip may be:"
+    echo "The MariaDB Galera cluster IP may be:"
     echo "    <empty>:	creates a new cluster"
     echo "    <IP>:	attach the node to the existing cluster"
+    echo
+    echo "    Other parameters are:"
+    for param in "--rep-user" "--rep-password" "--db-user" "--db-password" "--password, -p" "--key-file"; do
+        echo "        $param"
+    done
+    echo
+    exit 1
 fi
 
 repUser=repuser
@@ -98,7 +106,7 @@ else
 fi
 
 # get remote os family
-status=$($ssh_cmd "ls /etc/debian-version")
+status=$($ssh_cmd "ls /etc/debian_version")
 if [ "x$?" == "x0" ]; then
     osfamily=debian
 fi

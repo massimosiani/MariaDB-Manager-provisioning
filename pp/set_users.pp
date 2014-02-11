@@ -30,22 +30,21 @@ $manage_mysql_conf_dir = $::osfamily ? {
   /(?i)(debian)/ => "/etc/mysql/conf.d",
 }
 
-file { 'conf.dir':
-    ensure => directory,
-    path => "$manage_mysql_conf_dir",
-    before => File['skysql-galera'],
+file { 'mysql conf.dir':
+  ensure => directory,
+  path => "$manage_mysql_conf_dir",
+  before => File['skysql-galera'],
 }
 
 file { 'skysql-galera':
-    ensure => present,
-    path => "${manage_mysql_conf_dir}/skysql-galera-puppet.cnf",
-    content => template('mariadb/skysql-galera.erb'),
-    before => Service['mysql'],
+  ensure => present,
+  path => "${manage_mysql_conf_dir}/skysql-galera-puppet.cnf",
+  content => template('mariadb/skysql-galera.erb'),
+  before => Service['mysql'],
 }
 
 service { 'mysql':
   ensure => 'running',
-  start => ' su mysql /etc/init.d/mysql start',
 }
 
 
@@ -88,12 +87,16 @@ define grantAll (
 }
 
 
-removeMysqlUser { ["@localhost", "@$::hostname"]: }
+#removeMysqlUser { ["root@"]: }
 addMysqlUser { "${rep_user}@%": password => "$manage_rep_password",}
 addMysqlUser { "${db_user}@%": password => "$manage_db_password",}
 grantAll { [ "${rep_user}@%", "${db_user}@%" ]: }
 
+anchor { 'mysql::server::end': }
+class { '::mysql::server::account_security':
+  require => Service["mysql"],
+}
 
 exec { "/etc/init.d/mysql stop":
-  require => [ Mysql_grant["$db_user@%"], Mysql_grant["$rep_user@%"], RemoveMysqlUser["@localhost"], RemoveMysqlUser["@$::hostname"] ],
+  require => [ Mysql_grant["$db_user@%"], Mysql_grant["$rep_user@%"], Class['::mysql::server::account_security'] ],
 }
