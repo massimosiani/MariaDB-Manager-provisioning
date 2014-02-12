@@ -22,6 +22,9 @@
 
 refresh_variables() {
     tmp=$(puppet config print modulepath)
+    if [ -z "$tmp" ] ; then
+        tmp="/etc/puppet/modules:/etc/puppet/modules"
+    fi
     tmp1=${tmp##*:}
     mkdir -p $tmp1
 
