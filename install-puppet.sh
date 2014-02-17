@@ -41,12 +41,12 @@ if [[ "$osfamily" == "debian" ]] ; then
     sudo aptitude -y install puppet
     VERSION=$(lsb_release -c | cut -f2)
     if ! grep -q repo.percona.com/apt /etc/apt/sources.list ; then
-    if [[ ! -z $VERSION ]] ; then
-        echo "deb http://repo.percona.com/apt $VERSION main" >> /etc/apt/sources.list
-        echo "deb-src http://repo.percona.com/apt $VERSION main" >> /etc/apt/sources.list
+        if [[ ! -z $VERSION ]] ; then
+            echo "deb http://repo.percona.com/apt $VERSION main" >> /etc/apt/sources.list
+            echo "deb-src http://repo.percona.com/apt $VERSION main" >> /etc/apt/sources.list
+        fi
     fi
-    fi
-    elif [[ "$osfamily" == "redhat" ]] ; then
+elif [[ "$osfamily" == "redhat" ]] ; then
     sudo rpm -ivh https://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-7.noarch.rpm
     sudo rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm
     sudo yum -y install puppet
