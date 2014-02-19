@@ -20,6 +20,11 @@
 # Date: January 2014
 
 
+# skip if puppet is already installed
+if [ puppet &>/dev/null ] ; then
+    exit 0
+fi
+
 if [ -f /etc/debian_version ]; then
     osfamily=debian
 elif [ -f /etc/redhat-release ]; then
@@ -32,11 +37,11 @@ fi
 
 if [[ "$osfamily" == "debian" ]] ; then
     VERSION=$(lsb_release -c | cut -f2)
-    puppetPackage="puppetlabs-release-${VERSION}.deb"
-    wget https://apt.puppetlabs.com/$puppetPackage
-    sudo dpkg -i $puppetPackage
-    rm -f $puppetPackage
-    apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A
+#    puppetPackage="puppetlabs-release-${VERSION}.deb"
+#    wget https://apt.puppetlabs.com/$puppetPackage
+#    sudo dpkg -i $puppetPackage
+#    rm -f $puppetPackage
+#    apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A
     sudo aptitude update
     sudo aptitude -y install puppet
     VERSION=$(lsb_release -c | cut -f2)
