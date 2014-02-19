@@ -30,17 +30,17 @@
 
 # small usage help
 if [[ $# -lt 1 ]] ; then
-    echo
-    echo "Usage: $(basename $0) [OPTIONS] <[user@]node IP> <MariaDB Galera cluster IP>"
-    echo "The MariaDB Galera cluster IP may be:"
-    echo "    <empty>:	creates a new cluster"
-    echo "    <IP>:	attach the node to the existing cluster"
-    echo
-    echo "    Other parameters are:"
+    log_info
+    log_info "Usage: $(basename $0) [OPTIONS] <[user@]node IP> <MariaDB Galera cluster IP>"
+    log_info "The MariaDB Galera cluster IP may be:"
+    log_info "    <empty>:	creates a new cluster"
+    log_info "    <IP>:	attach the node to the existing cluster"
+    log_info
+    log_info "    Other parameters are:"
     for param in "--rep-user" "--rep-password" "--db-user" "--db-password" "--password, -p" "--key-file"; do
-        echo "        $param"
+        log_info "        $param"
     done
-    echo
+    log_info
     exit 1
 fi
 
@@ -82,7 +82,7 @@ while [[ $# -gt 0 ]] ; do
     esac
     shift
 done
-[[ -z "$nodeIP" ]] && echo "ERROR: Target node IP not provided" && exit 1
+[[ -z "$nodeIP" ]] && log_info "ERROR: Target node IP not provided" && exit 1
 
 # set ssh command
 if [[ ! -z "$sshPassword" ]] ; then
@@ -92,7 +92,7 @@ elif [[ ! -z "$sshKey" ]] ;  then
     ssh_cmd="ssh -i $sshKey -t $nodeIP"
     scp_cmd="scp -i $sshKey -r"
 else
-    echo "No ssh password nor ssh key provided - the script may hang and ask for a password"
+    log_error "No ssh password nor ssh key provided - the script may hang and ask for a password"
     ssh_cmd="ssh -t $nodeIP"
     scp_cmd="scp -r"
 fi
@@ -115,7 +115,7 @@ if [ "x$?" == "x0" ]; then
     osfamily=redhat
 fi
 if [ -z "$osfamily" ] ; then
-    echo Unsupported distribution
+    log_info Unsupported distribution
     exit 1
 fi
 

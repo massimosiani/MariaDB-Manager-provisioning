@@ -25,12 +25,9 @@ if [ puppet &>/dev/null ] ; then
     exit 0
 fi
 
-if [ -f /etc/debian_version ]; then
-    osfamily=debian
-elif [ -f /etc/redhat-release ]; then
-    osfamily=redhat
-else
-    echo Unsupported distribution
+osfamily=$(getOsFamily)
+if [ "x$osfamily" == "xunsupported" ]; then
+    log_error Unsupported distribution
     exit 1
 fi
 

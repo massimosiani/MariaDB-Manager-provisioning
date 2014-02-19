@@ -32,7 +32,7 @@ log_error() {
 #    logger -p user.error -t Provisioning $@
 }
 
-# Returns the Os Family
+# Returns the local OS family
 getOsFamily() {
     if [ -f /etc/debian_version ]; then
         echo debian
