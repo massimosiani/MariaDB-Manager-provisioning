@@ -19,6 +19,10 @@
 # Date: February 2014
 #
 # Parameters:
+# $1: the password for the skysqlagent user
+#
+# Description:
+# 
 
 
 cd $(dirname $0)
