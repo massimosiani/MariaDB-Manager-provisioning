@@ -1,3 +1,4 @@
+#!/bin/bash
 # This file is distributed as part of the MariaDB Enterprise.  It is free
 # software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation,
@@ -21,8 +22,14 @@
 
 
 cd $(dirname $0)
+if [[ $# -lt 1 ]] ; then
+	exit 1
+fi
 
-password_hash=$1
+password=$1
+salt=$(< /dev/urandom tr -dc A-Z-a-z-0-9 | head -c8)
+echo $salt
+password_hash=$(ruby shadow_pwd.rb $password '$6$'${salt})
 
 log_info Connecting node...
 cat > pp/connect.pp << End-of-connect
@@ -36,10 +43,10 @@ ensure => installed,
 
 user { 'skysqlagent':
 ensure     => present,
-expiry => absent,
-comment => 'The SkySQL agent',i
+#expiry => absent,
+comment => 'The SkySQL agent',
 managehome => false,
-password => $password_hash,
+password => '$password_hash',
 shell => '/bin/bash',
 }
 

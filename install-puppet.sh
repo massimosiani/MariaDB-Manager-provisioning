@@ -20,6 +20,7 @@
 # Date: January 2014
 
 
+. ./vars.sh
 # skip if puppet is already installed
 if [ puppet &>/dev/null ] ; then
     exit 0
