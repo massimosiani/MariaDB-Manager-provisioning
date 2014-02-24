@@ -1,3 +1,23 @@
+# This file is distributed as part of the MariaDB Enterprise. It is free
+# software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation,
+# version 2.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 51
+# Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# Copyright 2014 SkySQL Corporation Ab
+#
+# Author: Massimo Siani
+# Date: February 2014
+#
+#
 # == Class: mdbe::provision
 #
 # Full description of class example_class here.
@@ -29,18 +49,37 @@
 
 
 class mdbe::provision (
-  $node_state = false
+  $packages       = undef,
+  $extra_packages = undef,
+  $db_user        = undef,
+  $db_passwd      = undef,
+  $rep_user       = undef,
+  $rep_passwd     = undef,
+  $update_users   = false,
+  $template_file  = undef,
+  $api_host       = undef,
+  $node_id        = undef,
+  $system_id      = undef,
+  $node_state     = false
 ) {
 
   # Variable validation
+  validate_bool($update_users)
   validate_bool($node_state)
 
 
   class { 'mdbe::provision::install_packages':
+    packages       => $packages,
+    extra_packages => $extra_packages,
   }
 
   class { 'mdbe::provision::configuration':
-    require => Class['mdbe::provision::install_packages'],
+    db_user       => $db_user,
+    db_passwd     => $db_passwd,
+    rep_user      => $rep_user,
+    rep_passwd    => $rep_passwd,
+    template_file => $template_file,
+    require       => Class['mdbe::provision::install_packages'],
   }
 
   # Set the node state

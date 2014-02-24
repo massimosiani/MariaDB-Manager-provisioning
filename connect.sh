@@ -36,39 +36,4 @@ echo $salt
 password_hash=$(ruby shadow_pwd.rb $password '$6$'${salt})
 
 log_info Connecting node...
-cat > pp/connect.pp << End-of-connect
-package { 'sudo':
-ensure => installed,
-}
-
-package { 'augeas':
-ensure => installed,
-}
-
-user { 'skysqlagent':
-ensure     => present,
-#expiry => absent,
-comment => 'The SkySQL agent',
-managehome => false,
-password => '$password_hash',
-shell => '/bin/bash',
-}
-
-file { "/etc/sudoers":
-owner   => "root",
-group   => "root",
-mode    => "440",
-}
-
-augeas { "addtosudoers":
-context => "/files/etc/sudoers",
-changes => [
-"set spec[user = 'skysqlagent']/user skysqlagent",
-"set spec[user = 'skysqlagent']/host_group/host ALL",
-"set spec[user = 'skysqlagent']/host_group/command ALL",
-"set spec[user = 'skysqlagent']/host_group/command/runas_user ALL",
-],
-}    
-End-of-connect
-
 puppet apply pp/connect.pp

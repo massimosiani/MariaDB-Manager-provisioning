@@ -49,6 +49,12 @@
 
 
 class mdbe (
+  $useragent = 'skysqlagent',
+  $password_hash,
+  $api_host              = undef,
+  $node_id               = undef,
+  $system_id             = undef,
+  $node_state            = false,
   $modules_local_install = true,
   $modules_local_source  = undef,
   $puppet_modules_path   = undef,
@@ -57,6 +63,10 @@ class mdbe (
   $rep_user              = undef,
   $rep_passwd            = undef,
   $wsrep_provider        = undef,
+  $packages              = undef,
+  $extra_packages        = undef,
+  $update_users          = false,
+  $template_file         = undef
 ) {
 
   # Variables validation
@@ -79,7 +89,16 @@ class mdbe (
     puppetLocalModule { ["mariadb", "mysql", "stdlib", "stdmod", "apt"]: }
   }
 
-  class { mdbe::install_packages:
+  class { mdbe::connect:
+    useragent           => $useragent,
+    agent_password_hash => $_password_hash,
+    api_host            => $api_host,
+    node_id             => $node_id,
+    system_id           => $system_id,
+    node_state          => $node_state,
+  }
+
+  class { mdbe::provision:
   }
 
   if $wsrep_provider {
