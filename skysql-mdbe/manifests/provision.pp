@@ -29,9 +29,7 @@
 
 
 class mdbe::provision (
-
   $node_state = false
-
 ) {
 
   # Variable validation
@@ -42,10 +40,18 @@ class mdbe::provision (
   }
 
   class { 'mdbe::provision::configuration':
+    require => Class['mdbe::provision::install_packages'],
   }
 
   # Set the node state
   if $node_state {
+    mdbe::helper::set_node_state { 'provisioned':
+      api_host   => "$api_host",
+      node_state => 'provisioned',
+      node_id    => "$node_id",
+      system_id  => "$system_id",
+      require    => Class['mdbe::provision::configuration'],
+    }
   }
 
 }
