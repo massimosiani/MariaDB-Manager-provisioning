@@ -20,6 +20,30 @@
 # Date: January 2014
 
 
+# Logs an info
+log_info() {
+    echo $@
+#    logger -p user.info -t Provisioning $@
+}
+
+# Logs an error
+log_error() {
+    echo $@
+#    logger -p user.error -t Provisioning $@
+}
+
+# Returns the local OS family
+getOsFamily() {
+    if [ -f /etc/debian_version ]; then
+        echo debian
+    elif [ -f /etc/redhat-release ]; then
+        echo redhat
+    else
+        echo unsupported
+    fi
+}
+
+# Sets some useful variables
 refresh_variables() {
     tmp=$(puppet config print modulepath)
     if [ -z "$tmp" ] ; then

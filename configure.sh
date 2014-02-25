@@ -24,14 +24,19 @@
 # $4:		Database password
 
 
+if [[ $# -lt 4 ]] ; then
+    log_info "Usage: $(basename $0) <rep_user> <rep_pwd> <db_user> <db_pwd>"
+    exit 1
+fi
+
 cd $(dirname $0)
 . ./vars.sh
 refresh_variables
 
-echo Installing Puppet modules...
+log_info Installing Puppet modules...
 puppet apply pp/install-modules.pp
-echo Installing packages...
+log_info Installing packages...
 puppet apply pp/install-packages.pp
 refresh_variables $1 $2 $3 $4
-echo Setting up MariaDB users...
+log_info Setting up MariaDB users...
 puppet apply pp/set_users.pp
