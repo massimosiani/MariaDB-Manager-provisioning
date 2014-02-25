@@ -53,13 +53,14 @@ class mdbe::connect::install_scripts (
       'RedHat' => 'http://eng01.skysql.com/pre-repo/STABLE/centos6.5_x86_64/MariaDB-Manager.repo',
       'Debian' => '',
       default  => '',
-    }
+    },
+    default    => '',
   }
 
   $_repo_file = '/etc/yum.repos.d/MariaDB-Manager.repo'
 
   exec { "retrieve_repo":
-    command => "wget -q ${_remote_repo} -O ${_repo_file}",
+    command => "wget -q $_remote_repo -O $_repo_file",
     path    => $::path,
   }
 

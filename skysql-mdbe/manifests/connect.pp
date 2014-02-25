@@ -70,7 +70,7 @@ class mdbe::connect (
     agent_password_hash => $agent_password_hash,
   }
 
-  class { mdbe::connect::install_packages:
+  class { mdbe::connect::install_scripts:
     require => Class['mdbe::connect::agent'],
   }
 

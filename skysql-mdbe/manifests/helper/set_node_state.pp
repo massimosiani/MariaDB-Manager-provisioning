@@ -58,14 +58,16 @@ define mdbe::helper::set_node_state (
   $api_host,
   $node_state,
   $node_id,
-  $system_id
+  $system_id,
+  $auth_key_number,
+  $auth_key
 ) {
 
   $_method = "PUT"
   $_request_uri = "system/${system_id}/node/${node_id}"
-  $full_url = "http://${api_host}/restfulapi/${_request_uri}"
+  $full_url = "http://${api_host}/restfulapi/$_request_uri"
   $api_auth_date = generate('/bin/date', '--rfc-2822')
-  $md5_chksum = generate("echo -n $request_uri$auth_key$api_auth_date | md5sum | awk '{print $1}'")
+  $md5_chksum = generate("echo -n $_request_uri$auth_key$api_auth_date | md5sum | awk '{print \$1}'")
   $api_auth_header = "api-auth-${auth_key_number}-${md5_chksum}"
 
   exec{ "$title":

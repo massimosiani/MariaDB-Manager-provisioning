@@ -46,13 +46,13 @@
 
 
 class mdbe (
-  $useragent = 'skysqlagent',
+  $useragent             = 'skysqlagent',
   $password_hash,
   $api_host              = undef,
   $node_id               = undef,
   $system_id             = undef,
   $node_state            = false,
-  $modules_local_install = true,
+  $modules_local_install = false,
   $modules_local_source  = undef,
   $puppet_modules_path   = undef,
   $db_user               = undef,
@@ -63,9 +63,7 @@ class mdbe (
   $packages              = undef,
   $extra_packages        = undef,
   $update_users          = false,
-  $template_file         = undef
-) {
-
+  $template_file         = undef) {
   # Variables validation
   $_puppet_modules_path = $puppet_modules_path ? {
     /w+/    => $puppet_modules_path,
@@ -77,18 +75,16 @@ class mdbe (
   }
   $_package_name = "MariaDB-Manager-provisioning"
 
-
   if $modules_local_install {
-    class { mdbe::local_install:
+    mdbe::helper::local_modules { ["mariadb", "mysql", "stdlib", "stdmod", "apt"]:
       puppet_modulepath => $_puppet_modules_path,
       source_dir        => $_modules_local_source,
     }
-    puppetLocalModule { ["mariadb", "mysql", "stdlib", "stdmod", "apt"]: }
   }
 
   class { mdbe::connect:
     useragent           => $useragent,
-    agent_password_hash => $_password_hash,
+    agent_password_hash => $password_hash,
     api_host            => $api_host,
     node_id             => $node_id,
     system_id           => $system_id,
@@ -96,11 +92,7 @@ class mdbe (
   }
 
   class { mdbe::provision:
-  }
-
-  if $wsrep_provider {
-    class { mdbe::set_users:
-    }
+    update_users => true,
   }
 
 }
