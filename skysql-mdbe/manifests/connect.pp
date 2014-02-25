@@ -18,14 +18,26 @@
 # Date: February 2014
 #
 #
-# == Class: mdbe::connect::install_scripts
+# == Class: mdbe::connect
 #
-# Install the Galera Remote Execution package of the MariaDB Enterprise package.
+# Handles the connect step of the MariaDB Enterprise provisioning
 #
 # === Parameters
 #
+# [*useragent*]
+#   The Agent user. It will be created on the node and given sudo privileges.
+# [*agent_password_hash*]
+#   The password hash for the user agent. You can use the shadow_pwd function
+#   in this module to obtain the hash.
+# [*api_host*]
+#   Where the API is hosted.
+# [*node_id*]
+#   The ID of the node.
+# [*system_id*]
+#   The ID of the system.
 # [*node_state*]
-#   The node state name the node should be at the end of execution.
+#   Whether the MariaDB-Manager-API will be called at the end of the connect
+#   process to update the node state metadata. Defaults to false.
 #
 # === Variables
 #
@@ -47,9 +59,9 @@
 class mdbe::connect (
   $useragent = 'skysqlagent',
   $agent_password_hash,
-  $api_host,
-  $node_id,
-  $system_id,
+  $api_host   = undef,
+  $node_id    = undef,
+  $system_id  = undef,
   $node_state = false
 ) { 
 

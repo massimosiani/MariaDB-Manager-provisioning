@@ -23,16 +23,25 @@
 #
 # === Parameters
 #
+# [*api_host*]
+#   The API host.
+#
 # [*node_state*]
 #   The node state to be set.
 #
-# [*source_dir*]
-#   The source directory of the local module to install.
+# [*node_id*]
+#   The ID of the node.
+#
+# [*system_id*]
+#   The ID of the system.
 #
 # === Examples
 #
 #   mdbe::helper::set_node_state { 'connected':
+#     api_host   => '192.168.0.1',
 #     node_state => 'connected',
+#     node_id    => 1,
+#     system_id  => 1,
 #   }
 #
 # === Authors

@@ -20,15 +20,12 @@
 #
 # == Class: mdbe
 #
-# Full description of class mdbe here.
+# The main of the MariaDB Enterprise provisioning.
 #
 # === Parameters
 #
 # Document parameters here.
 #
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
 #
 # === Variables
 #

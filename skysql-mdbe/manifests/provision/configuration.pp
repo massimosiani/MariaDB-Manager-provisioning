@@ -25,9 +25,22 @@
 #
 # Document parameters here.
 #
-# [*ntp_servers*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
+# [*db_user*]
+#   This user will replace the root user in the database, for security reasons.
+# [*db_passwd*]
+#   The password of the database user.
+# [*rep_user*]
+#   This user is used by Galera for replication purposes.
+# [*rep_passwd*]
+#   The password of the replication user.
+# [*update_users*]
+#   Whether the root-replacing user and the replication user should be
+#   updated in the database. Updating the users will restart the database server.
+#   Default is false.
+# [*template_file*]
+#   The location of the template file that contains the Galera configuration.
+#   It must be a valid Puppet template file, and placed in the template folder
+#   of a Puppet module.
 #
 # === Variables
 #
@@ -35,6 +48,11 @@
 # === Examples
 #
 #  class { 'mdbe::provision::configuration':
+#    $db_user      => 'dbuser',
+#    $db_passwd    => 'yourpwd',
+#    $rep_user     => 'rep_user',
+#    $rep_passwd   => 'yourreppwd',
+#    $update_users => true,
 #  }
 #
 # === Authors
@@ -47,14 +65,12 @@
 #
 
 class mdbe::provision::configuration (
-
-  $db_user,
-  $db_passwd,
-  $rep_user,
-  $rep_passwd,
+  $db_user       = undef,
+  $db_passwd     = undef,
+  $rep_user      = undef,
+  $rep_passwd    = undef,
   $update_users  = false,
   $template_file = undef,
-
 ) {
 
   # Variable validation

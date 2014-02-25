@@ -24,15 +24,8 @@
 #
 # === Parameters
 #
-# [*useragent*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
-# [*agent_password_hash*]
-#   The hash of the password for the user defined in the useragent, as
-#   will be written in the /etc/shadow file. Include the salt. You may
-#   use the shadow_pwd.rb script included in this module.
-# [*node_state*]
-#   The node state name the node should be at the end of execution.
+# [*remote_repo*]
+#   The MariaDB-Manager repository, leave blank for the default.
 #
 # === Variables
 #
@@ -52,9 +45,7 @@
 
 
 class mdbe::connect::install_scripts (
-
   $remote_repo = '',
-
 ) {
 
   $_remote_repo = $remote_repo ? {

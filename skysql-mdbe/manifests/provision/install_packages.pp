@@ -20,15 +20,15 @@
 #
 # == Class: mdbe::provision::install_packages
 #
-# Manages the package installation for MariaDB Enterprise
+# Manages the package installation for MariaDB Enterprise. Installed packages are:
+# curl, netcat, percona-xtrabackup, the MariaDB Galera server, the MariaDB client
 #
 # === Parameters
 #
-# Document parameters here.
-#
-# [*ntp_servers*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
+# [*packages*]
+#   Currently unused.
+# [*extra_packages*]
+#   Currently unused.
 #
 # === Variables
 #
@@ -48,10 +48,8 @@
 
 
 class mdbe::provision::install_packages (
-
   $packages       = undef,
   $extra_packages = undef
-
 ) {
 
   $mariadb_client = $::operatingsystem ? {

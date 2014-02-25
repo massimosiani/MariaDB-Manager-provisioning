@@ -36,7 +36,7 @@
 #
 # === Examples
 #
-#  class { mdbe::connect:
+#  class { mdbe::connect::agent:
 #    useragent           => 'skysqlagent',
 #    agent_password_hash => '$6$TC6y8xnU$khyU9QadbVRsdKxe.hKTW4dFnEfez4DtfmBnzHLlrC2/Ico2aUXSDWL7xSQLUKUso71oyiCTgokfGsdXcH3.h0',
 #  }
@@ -51,10 +51,8 @@
 
 
 class mdbe::connect::agent (
-
   $useragent           = 'skysqlagent',
   $agent_password_hash = undef,
-
 ) {
 
   # Variable validation

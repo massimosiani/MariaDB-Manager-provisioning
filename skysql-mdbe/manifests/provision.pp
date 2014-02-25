@@ -20,15 +20,15 @@
 #
 # == Class: mdbe::provision
 #
-# Full description of class example_class here.
+# Handles the provision step of the MariaDB Enterprise provisioning.
 #
 # === Parameters
 #
-# Document parameters here.
-#
-# [*ntp_servers*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
+# [*packages*]
+#   Currently unused.
+# [*extra_packages*]
+#   Currently unused.
+# [*db_user*]
 #
 # === Variables
 #
