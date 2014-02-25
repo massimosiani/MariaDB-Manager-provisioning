@@ -47,6 +47,7 @@ package { $packages_needed:
 if $::osfamily =~ /(?i)(redhat)/ {
   exec { 'datadir':
       command => "/bin/echo [mysqld] >> /etc/my.cnf ; /bin/echo datadir=/var/lib/mysql >> /etc/my.cnf",
+      onlyif  => "! grep -q datadir /etc/my.cnf",
       require => Class['mariadb'],
   }
 }
