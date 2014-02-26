@@ -59,12 +59,18 @@ class mdbe::connect::install_scripts (
 
   $_repo_file = '/etc/yum.repos.d/MariaDB-Manager.repo'
 
+  package { 'wget':
+    ensure => present,
+  }
+
   exec { "retrieve_repo":
-    command => "wget -q $_remote_repo -O $_repo_file",
+    command => "wget -q $_remote_repo -O $_repo_file ; sed -i 's/centos6.5_x86_64/centos6.5_x86_64-DataNode/' $_repo_file",
     path    => $::path,
+    require => Package['wget'],
   }
 
   package { 'MariaDB-Manager-GREX':
     ensure => installed,
+    require => Exec['retrieve_repo'],
   }
 }

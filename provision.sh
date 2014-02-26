@@ -28,6 +28,8 @@
 # --key-file:			ssh key file, with path
 
 
+. ./MariaDB-Manager-provisioning/vars.sh
+
 # small usage help
 if [[ $# -lt 1 ]] ; then
     log_info
@@ -128,5 +130,6 @@ fi
 # execute commands
 $scp_cmd MariaDB-Manager-provisioning ${nodeIP}:~/
 $ssh_cmd "sudo MariaDB-Manager-provisioning/install-puppet.sh;
-          sudo MariaDB-Manager-provisioning/configure.sh $repUser $repPassword $dbUser $dbPassword;
+	  sudo puppet apply MariaDB-Manager-provisioning/start.pp;
+#          sudo MariaDB-Manager-provisioning/configure.sh $repUser $repPassword $dbUser $dbPassword;
           sudo /etc/init.d/mysql start $wsrep_opt "

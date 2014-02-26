@@ -60,7 +60,8 @@ class mdbe::provision (
   $api_host       = undef,
   $node_id        = undef,
   $system_id      = undef,
-  $node_state     = false
+  $node_state     = false,
+  $wsrep_provider = '/usr/lib64/galera/libgalera_smm.so',
 ) {
 
   # Variable validation
@@ -78,7 +79,9 @@ class mdbe::provision (
     db_passwd     => $db_passwd,
     rep_user      => $rep_user,
     rep_passwd    => $rep_passwd,
+    update_users  => $update_users,
     template_file => $template_file,
+    wsrep_provider => $wsrep_provider,
     require       => Class['mdbe::provision::install_packages'],
   }
 

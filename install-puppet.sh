@@ -22,6 +22,15 @@
 
 cd $(dirname $0)
 . ./vars.sh
+
+# TODO: find some better mechanism to upload the modules
+mkdir -p /etc/puppet/modules/{mdbe,stdlib,mariadb,stdmod,mysql}
+rsync --delete -r mdbe/ /etc/puppet/modules/mdbe/
+rsync --delete -r puppet-stdlib-master/ /etc/puppet/modules/stdlib/
+rsync --delete -r puppet-stdmod-master/ /etc/puppet/modules/stdmod/
+rsync --delete -r puppet-mysql-master/ /etc/puppet/modules/mysql/
+rsync --delete -r puppet-mariadb-master/ /etc/puppet/modules/mariadb/
+
 # skip if puppet is already installed
 which puppet &>/dev/null
 if [ $? -eq 0 ] ; then
@@ -51,7 +60,9 @@ if [[ "$osfamily" == "debian" ]] ; then
         fi
     fi
 elif [[ "$osfamily" == "redhat" ]] ; then
-    sudo rpm -ivh https://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-7.noarch.rpm
+#    sudo rpm -ivh https://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-7.noarch.rpm
+    sudo rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
     sudo rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm
+    sudo yum clean all
     sudo yum -y install puppet
 fi

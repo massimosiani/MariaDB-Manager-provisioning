@@ -70,7 +70,8 @@ class mdbe::provision::configuration (
   $rep_user      = undef,
   $rep_passwd    = undef,
   $update_users  = false,
-  $template_file = undef,) {
+  $template_file = 'skysql-galera.erb',
+  $wsrep_provider = '/usr/lib64/galera/libgalera_smm.so') {
   # Variable validation
   validate_bool($update_users)
 
@@ -80,7 +81,7 @@ class mdbe::provision::configuration (
   $manage_db_password = $db_passwd
 
   $_template_file = $template_file ? {
-    /.+/    => $template_file,
+    /w+/    => $template_file,
     default => 'skysql-galera.erb'
   }
 
@@ -91,7 +92,7 @@ class mdbe::provision::configuration (
   }
 
   define removeMysqlUser ($user = $title) {
-    Service["mysql"] -> RemoveMysqlUser["$title"]
+    Service['start_mysql'] -> RemoveMysqlUser["$title"]
 
     mysql_user { "$title":
       name   => "$user",
@@ -100,7 +101,7 @@ class mdbe::provision::configuration (
   }
 
   define addMysqlUser ($user = $title, $password = "") {
-    Service["mysql"] -> AddMysqlUser["$title"]
+    Service['start_mysql'] -> AddMysqlUser["$title"]
 
     mysql_user { "$title":
       name          => "$user",
@@ -131,11 +132,12 @@ class mdbe::provision::configuration (
     ensure  => present,
     path    => "${manage_mysql_conf_dir}/skysql-galera.cnf",
     content => template("mdbe/$_template_file"),
-    before  => Service['mysql'],
+    before  => Service['start_mysql'],
   }
 
   if $update_users {
-    service { 'mysql': ensure => running, }
+    service { 'start_mysql': binary => '/etc/init.d/mysql', ensure => running,
+start => '/etc/init.d/mysql start', }
 
     addMysqlUser { "${rep_user}@%": password => "$manage_rep_password", }
 

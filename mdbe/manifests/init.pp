@@ -66,12 +66,12 @@ class mdbe (
   $template_file         = undef) {
   # Variables validation
   $_puppet_modules_path = $puppet_modules_path ? {
-    /w+/    => $puppet_modules_path,
+    /.+/    => $puppet_modules_path,
     default => "/etc/puppet/modules",
   }
-  $_modules_local_source = $::modules_local_source ? {
-    /.+/    => $::module_local_source,
-    default => "/root",
+  $_modules_local_source = $modules_local_source ? {
+    /.+/    => $module_local_source,
+    default => "/root/MariaDB-Manager-provisioning",
   }
   $_package_name = "MariaDB-Manager-provisioning"
 
@@ -92,6 +92,10 @@ class mdbe (
   }
 
   class { mdbe::provision:
+    db_user               => $db_user,
+    db_passwd             => $db_passwd,
+    rep_user              => $rep_user,
+    rep_passwd => $rep_passwd,
     update_users => true,
   }
 
