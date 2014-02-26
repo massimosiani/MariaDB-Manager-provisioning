@@ -20,10 +20,12 @@
 # Date: January 2014
 
 
+cd $(dirname $0)
 . ./vars.sh
 
 # skip if puppet is already installed
-if [ puppet &>/dev/null ] ; then
+which puppet &>/dev/null
+if [ $? -eq 0 ] ; then
     exit 0
 fi
 

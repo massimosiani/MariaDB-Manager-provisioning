@@ -28,6 +28,8 @@
 # --key-file:			ssh key file, with path
 
 
+. ./MariaDB-Manager-provisioning/vars.sh
+
 # small usage help
 if [[ $# -lt 1 ]] ; then
     log_info

@@ -46,8 +46,9 @@ package { $packages_needed:
 # Debian does seem to explicitly include the datadir option by default
 if $::osfamily =~ /(?i)(redhat)/ {
   exec { 'datadir':
-      command => "/bin/echo [mysqld] >> /etc/my.cnf ; /bin/echo datadir=/var/lib/mysql >> /etc/my.cnf",
-      onlyif  => "! grep -q datadir /etc/my.cnf",
+      command => 'sed -i "/datadir[w]*/d ; /\[mysqld\]/a \
+datadir=/var/lib/mysql" /etc/my.cnf',
+      path    => $::path,
       require => Class['mariadb'],
   }
 }
