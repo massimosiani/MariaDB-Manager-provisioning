@@ -61,6 +61,7 @@ class mdbe::provision::install_packages (
   $manage_netcat = $::osfamily ? {
     /(?i)(redhat)/ => "nc",
     /(?i)(debian)/ => "netcat",
+    default        => "netcat",
   }
 
   $packages_needed = [ "curl", "percona-xtrabackup", "$manage_netcat", "$mariadb_client" ]

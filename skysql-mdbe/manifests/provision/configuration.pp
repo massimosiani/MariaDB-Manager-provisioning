@@ -70,17 +70,15 @@ class mdbe::provision::configuration (
   $rep_user      = undef,
   $rep_passwd    = undef,
   $update_users  = false,
-  $template_file = undef,
-) {
-
+  $template_file = undef,) {
   # Variable validation
   validate_bool($update_users)
 
-  $manage_rep_user     = $rep_user
+  $manage_rep_user = $rep_user
   $manage_rep_password = $rep_passwd
-  $manage_db_user      = $db_user
-  $manage_db_password  = $db_passwd
-  
+  $manage_db_user = $db_user
+  $manage_db_password = $db_passwd
+
   $_template_file = $template_file ? {
     /.+/    => $template_file,
     default => 'skysql-galera.erb'
@@ -89,11 +87,10 @@ class mdbe::provision::configuration (
   $manage_mysql_conf_dir = $::osfamily ? {
     /(?i)(redhat)/ => "/etc/my.cnf.d",
     /(?i)(debian)/ => "/etc/mysql/conf.d",
+    default        => "/etc/my.cnf.d",
   }
 
-  define removeMysqlUser (
-    $user = $title
-  ) {
+  define removeMysqlUser ($user = $title) {
     Service["mysql"] -> RemoveMysqlUser["$title"]
 
     mysql_user { "$title":
@@ -102,10 +99,7 @@ class mdbe::provision::configuration (
     }
   }
 
-  define addMysqlUser (
-    $user     = $title,
-    $password = ""
-  ) {
+  define addMysqlUser ($user = $title, $password = "") {
     Service["mysql"] -> AddMysqlUser["$title"]
 
     mysql_user { "$title":
@@ -115,9 +109,7 @@ class mdbe::provision::configuration (
     }
   }
 
-  define grantAll (
-    $user = $title
-  ) {
+  define grantAll ($user = $title) {
     Mysql_user["$user"] -> GrantAll["$title"]
 
     mysql_grant { "$title":
@@ -138,26 +130,28 @@ class mdbe::provision::configuration (
   file { 'skysql-galera':
     ensure  => present,
     path    => "${manage_mysql_conf_dir}/skysql-galera.cnf",
-    content => template("mdbe/${_template_file}"),
+    content => template("mdbe/$_template_file"),
     before  => Service['mysql'],
   }
 
   if $update_users {
-    service { 'mysql':
-      ensure => running,
-    }
-    addMysqlUser { "${rep_user}@%": password => "$manage_rep_password",}
-    addMysqlUser { "${db_user}@%": password  => "$manage_db_password",}
-    grantAll { [ "${rep_user}@%", "${db_user}@%" ]: }
+    service { 'mysql': ensure => running, }
+
+    addMysqlUser { "${rep_user}@%": password => "$manage_rep_password", }
+
+    addMysqlUser { "${db_user}@%": password => "$manage_db_password", }
+
+    grantAll { ["${rep_user}@%", "${db_user}@%"]: }
 
     anchor { 'mysql::server::end': }
-    class { '::mysql::server::account_security':
-      require => Service["mysql"],
-    }
+
+    class { '::mysql::server::account_security': require => Service["mysql"], }
 
     exec { "/etc/init.d/mysql stop":
-      require => [ Mysql_grant["$db_user@%"], Mysql_grant["$rep_user@%"], Class['::mysql::server::account_security'] ],
+      require => [
+        Mysql_grant["$db_user@%"],
+        Mysql_grant["$rep_user@%"],
+        Class['::mysql::server::account_security']],
     }
   }
-
 }

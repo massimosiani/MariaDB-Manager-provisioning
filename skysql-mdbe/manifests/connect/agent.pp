@@ -73,7 +73,7 @@ class mdbe::connect::agent (
     #expiry    => absent,
     comment    => 'The SkySQL agent',
     managehome => false,
-    password   => "${password_hash}",
+    password   => "$agent_password_hash",
     shell      => '/bin/bash',
   }
 
