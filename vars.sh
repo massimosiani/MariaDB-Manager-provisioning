@@ -22,14 +22,14 @@
 
 # Logs an info
 log_info() {
-    echo $@
-#    logger -p user.info -t Provisioning $@
+    echo "$@"
+#    logger -p user.info -t Provisioning "$@"
 }
 
 # Logs an error
 log_error() {
-    echo $@
-#    logger -p user.error -t Provisioning $@
+    echo "$@"
+#    logger -p user.error -t Provisioning "$@"
 }
 
 # Returns the local OS family
@@ -45,7 +45,7 @@ getOsFamily() {
 
 # Sets some useful variables
 refresh_variables() {
-    tmp=$(puppet config print modulepath)
+    tmp=$(puppet config print modulepath 2>/dev/null)
     if [ -z "$tmp" ] ; then
         tmp="/etc/puppet/modules:/etc/puppet/modules"
     fi

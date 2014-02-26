@@ -20,9 +20,11 @@
 # Date: January 2014
 
 
+cd $(dirname $0)
 . ./vars.sh
 # skip if puppet is already installed
-if [ puppet &>/dev/null ] ; then
+which puppet &>/dev/null
+if [ $? -eq 0 ] ; then
     exit 0
 fi
 
@@ -42,7 +44,6 @@ if [[ "$osfamily" == "debian" ]] ; then
 #    apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A
     sudo aptitude update
     sudo aptitude -y install puppet
-    VERSION=$(lsb_release -c | cut -f2)
     if ! grep -q repo.percona.com/apt /etc/apt/sources.list ; then
         if [[ ! -z $VERSION ]] ; then
             echo "deb http://repo.percona.com/apt $VERSION main" >> /etc/apt/sources.list

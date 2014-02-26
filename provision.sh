@@ -82,7 +82,7 @@ while [[ $# -gt 0 ]] ; do
     esac
     shift
 done
-[[ -z "$nodeIP" ]] && log_info "ERROR: Target node IP not provided" && exit 1
+[[ -z "$nodeIP" ]] && log_error "ERROR: Target node IP not provided" && exit 1
 
 # set ssh command
 if [[ ! -z "$sshPassword" ]] ; then
@@ -115,7 +115,7 @@ if [ "x$?" == "x0" ]; then
     osfamily=redhat
 fi
 if [ -z "$osfamily" ] ; then
-    log_info Unsupported distribution
+    log_error "Unsupported distribution"
     exit 1
 fi
 
