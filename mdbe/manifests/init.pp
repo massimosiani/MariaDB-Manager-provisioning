@@ -98,7 +98,7 @@ class mdbe (
     db_passwd    => $db_passwd,
     rep_user     => $rep_user,
     rep_passwd   => $rep_passwd,
-    update_users => true,
+    update_users => $update_users,
   }
 
 }
