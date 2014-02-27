@@ -65,12 +65,12 @@
 #
 
 class mdbe::provision::configuration (
-  $db_user       = undef,
-  $db_passwd     = undef,
-  $rep_user      = undef,
-  $rep_passwd    = undef,
-  $update_users  = false,
-  $template_file = 'skysql-galera.erb',
+  $db_user        = undef,
+  $db_passwd      = undef,
+  $rep_user       = undef,
+  $rep_passwd     = undef,
+  $update_users   = false,
+  $template_file  = 'skysql-galera.erb',
   $wsrep_provider = '/usr/lib64/galera/libgalera_smm.so') {
   # Variable validation
   validate_bool($update_users)
@@ -136,10 +136,14 @@ class mdbe::provision::configuration (
   }
 
   if $update_users {
-    service { 'start_mysql': binary => '/etc/init.d/mysql', ensure => running,
-start => '/etc/init.d/mysql start', }
+    service { 'start_mysql':
+      binary => '/etc/init.d/mysql',
+      ensure => running,
+      start  => '/etc/init.d/mysql start',
+    }
 
     addMysqlUser { "${rep_user}@%": password => "$manage_rep_password", }
+    addMysqlUser { "${rep_user}@localhost": password => "$manage_rep_password", }
 
     addMysqlUser { "${db_user}@%": password => "$manage_db_password", }
 
@@ -147,12 +151,13 @@ start => '/etc/init.d/mysql start', }
 
     anchor { 'mysql::server::end': }
 
-    class { '::mysql::server::account_security': require => Service["mysql"], }
+    class { '::mysql::server::account_security': require => Service['start_mysql'], }
 
-    exec { "/etc/init.d/mysql stop":
+    mdbe::helper::mysql_stop { 'after_users_setup':
       require => [
-        Mysql_grant["$db_user@%"],
-        Mysql_grant["$rep_user@%"],
+        Mysql_grant["${db_user}@%"],
+        Mysql_grant["${rep_user}@%"],
+        Mysql_grant["${rep_user}@localhost"],
         Class['::mysql::server::account_security']],
     }
   }

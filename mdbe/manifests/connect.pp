@@ -57,14 +57,12 @@
 
 
 class mdbe::connect (
-  $useragent = 'skysqlagent',
+  $useragent  = 'skysqlagent',
   $agent_password_hash,
   $api_host   = undef,
   $node_id    = undef,
   $system_id  = undef,
-  $node_state = false
-) { 
-
+  $node_state = false) {
   class { mdbe::connect::agent:
     useragent           => $useragent,
     agent_password_hash => $agent_password_hash,
@@ -83,5 +81,4 @@ class mdbe::connect (
       require    => Class['mdbe::connect::install_packages'],
     }
   }
-
 }

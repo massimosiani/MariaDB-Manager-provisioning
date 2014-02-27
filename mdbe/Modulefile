@@ -1,11 +1,11 @@
 name    'skysql-mdbe'
 version '0.1.0'
-source ''
+source 'https://github.com/massimosiani/MariaDB-Manager-provisioning'
 author 'Massimo Siani'
-license 'GPL, Version 2'
+license 'GNU General Public License, Version 2.0'
 summary 'MariaDB Enterprise provisioning'
 description 'A distribution-independent Provisioning mechanism for MariaDB-Manager.'
-project_page ''
+project_page 'https://github.com/massimosiani/MariaDB-Manager-provisioning'
 
 ## Add dependencies, if any:
 # dependency 'username/name', '>= 1.2.0'
