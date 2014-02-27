@@ -147,7 +147,7 @@ class mdbe::provision::configuration (
 
     addMysqlUser { "${db_user}@%": password => "$manage_db_password", }
 
-    grantAll { ["${rep_user}@%", "${db_user}@%"]: }
+    grantAll { ["${rep_user}@%", "${rep_user}@localhost", "${db_user}@%"]: }
 
     anchor { 'mysql::server::end': }
 
