@@ -132,14 +132,14 @@ class mdbe::provision::configuration (
     ensure  => present,
     path    => "${manage_mysql_conf_dir}/skysql-galera.cnf",
     content => template("mdbe/$_template_file"),
-    before  => Service['start_mysql'],
   }
 
   if $update_users {
     service { 'start_mysql':
-      binary => '/etc/init.d/mysql',
-      ensure => running,
-      start  => '/etc/init.d/mysql start',
+      binary  => '/etc/init.d/mysql',
+      ensure  => running,
+      start   => '/etc/init.d/mysql start',
+      require => File['skysql-galera'],
     }
 
     addMysqlUser { "${rep_user}@%": password => "$manage_rep_password", }
