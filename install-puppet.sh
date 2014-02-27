@@ -61,8 +61,8 @@ if [[ "$osfamily" == "debian" ]] ; then
     fi
 elif [[ "$osfamily" == "redhat" ]] ; then
 #    sudo rpm -ivh https://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-7.noarch.rpm
-    sudo rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-    sudo rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm
+    [[ -f /etc/yum.repos.d/epel.repo ]] || sudo rpm -Uvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+    [[ -f /etc/yum.repos.d/Percona.repo ]] || sudo rpm -Uhv http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm
     sudo yum clean all
     sudo yum -y install puppet
 fi
