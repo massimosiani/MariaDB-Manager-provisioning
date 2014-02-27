@@ -1,0 +1,29 @@
+{
+  "author": "Massimo Siani",
+  "checksums": {
+    "manifests/connect/install_scripts.pp": "336bdcba10d496a461e2eef81559c70f",
+    "manifests/connect/agent.pp": "df946627e8de8dad34941d815baaf3c6",
+    "Rakefile": "f37e6131fe7de9a49b09d31596f5fbf1",
+    "manifests/provision/configuration.pp": "8559350ce5142fba4f74f585ed4c41c7",
+    "manifests/helper/local_modules.pp": "ec72cb45e2af848be14bfa67b7f81919",
+    "manifests/connect.pp": "19b2bf242c2bd3ee23bba60a8bca525f",
+    "manifests/provision/install_packages.pp": "0392f1edc072c6d556656b171f80d8b5",
+    "manifests/helper/set_node_state.pp": "09827f9d737c1bdc30831069086773fc",
+    "Modulefile": "20fd353ab514cedf8f664b1aa408a986",
+    "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+    "tests/init.pp": "2b33e9569d5ee604178004be46feaa21",
+    "spec/spec_helper.rb": "3ea886dd135e120afa31e0aab12e85b0",
+    "README.markdown": "8bd69a4dd661d17c4e2c03af6a32a04f",
+    "manifests/provision.pp": "f1b3cf9f65d7b1371339182436ad2f37",
+    "manifests/init.pp": "9274a48b058f4836ca401f6263785323"
+  },
+  "dependencies": [],
+  "description": "",
+  "license": "GPL v2",
+  "name": "skysql-mdbe",
+  "project_page": "",
+  "source": "",
+  "summary": "MariaDB Enterprise provisioning",
+  "types": [],
+  "version": "0.1.0"
+}

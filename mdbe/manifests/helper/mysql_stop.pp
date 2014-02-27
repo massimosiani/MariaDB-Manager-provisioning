@@ -15,29 +15,30 @@
 # Copyright 2014 SkySQL Ab
 #
 # Author: Massimo Siani
-# Date: January 2014
-
-
-$manage_modulepath = $::modulepath ? {
-  /w+/ => $::modulepath,
-  default => "/etc/puppet/modules",
+# Date: February 2014
+#
+# == Define: mysql_stop
+#
+# Stops the MySQL server, without declaring the service.
+# Uses the init script.
+#
+# === Parameters
+#
+# === Examples
+#
+#   mdbe::helper::mysql_stop { 'after_users_setup':
+#   }
+#
+# === Authors
+#
+# Massimo Siani <massimo.siani@skysql.com>
+#
+# === Copyright
+#
+# Copyright 2014 SkySQL Corporation Ab
+#
+define mdbe::helper::mysql_stop () {
+  exec { "$title":
+    command => '/etc/init.d/mysql stop',
+  }
 }
-$manage_source_dir = $::home ? {
-  /.+/ => $::home,
-  default => "/root",
-}
-$manage_package_name = "MariaDB-Manager-provisioning"
-
-define puppetLocalModule {
-    file { "puppet-${title}":
-        ensure => directory,
-        force => true,
-        path => "${manage_modulepath}/${title}",
-        purge => true,
-        recurse => true,
-        replace => true,
-        source => "${manage_source_dir}/${manage_package_name}/puppet-${title}-master",
-    }
-}
-
-puppetLocalModule { ["mariadb", "mysql", "stdlib", "stdmod", "apt"]: }

@@ -1,3 +1,4 @@
+#!/bin/bash
 # This file is distributed as part of the MariaDB Enterprise.  It is free
 # software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation,
@@ -15,13 +16,13 @@
 # Copyright 2012-2014 SkySQL Ab
 #
 # Author: Massimo Siani
-# Date: January 2014
+# Date: February 2014
 #
 # Parameters:
-# $1:		Replication username
-# $2:		Replication password
-# $3:		Database username (root is removed)
-# $4:		Database password
+# $1: the password for the skysqlagent user
+#
+# Description:
+# 
 
 
 if [[ $# -lt 4 ]] ; then
@@ -30,13 +31,14 @@ if [[ $# -lt 4 ]] ; then
 fi
 
 cd $(dirname $0)
-. ./vars.sh
-refresh_variables
+if [[ $# -lt 1 ]] ; then
+	exit 1
+fi
 
-log_info Installing Puppet modules...
-puppet apply pp/install-modules.pp
-log_info Installing packages...
-puppet apply pp/install-packages.pp
-refresh_variables $1 $2 $3 $4
-log_info Setting up MariaDB users...
-puppet apply pp/set_users.pp
+password=$1
+salt=$(< /dev/urandom tr -dc A-Z-a-z-0-9 | head -c8)
+echo $salt
+password_hash=$(ruby shadow_pwd.rb $password '$6$'${salt})
+
+log_info Connecting node...
+puppet apply pp/connect.pp
