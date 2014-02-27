@@ -19,7 +19,11 @@
 #
 # == Class: mdbe::provision::configuration
 #
-# Full description of class example_class here.
+# The configuration substep of the MariaDB Enterprise provision
+# adds a MariaDB Galera cluster configuration file based on a
+# template and may take care of standard users related security
+# issues and create new password protected standard and replication
+# users.
 #
 # === Parameters
 #
@@ -85,6 +89,12 @@ class mdbe::provision::configuration (
     default => 'skysql-galera.erb'
   }
 
+  $_mysql_conf_file = $::osfamily ? {
+    /(?i)(redhat)/ => "/etc/my.cnf",
+    /(?i)(debian)/ => "/etc/mysql/my.cnf",
+    default        => "/etc/my.cnf",
+  }
+
   $manage_mysql_conf_dir = $::osfamily ? {
     /(?i)(redhat)/ => "/etc/my.cnf.d",
     /(?i)(debian)/ => "/etc/mysql/conf.d",
@@ -92,7 +102,7 @@ class mdbe::provision::configuration (
   }
 
   define removeMysqlUser ($user = $title) {
-    Service['start_mysql'] -> RemoveMysqlUser["$title"]
+    Mdbe::Helper::Mysql_start['before_users_setup'] -> RemoveMysqlUser["$title"]
 
     mysql_user { "$title":
       name   => "$user",
@@ -101,7 +111,7 @@ class mdbe::provision::configuration (
   }
 
   define addMysqlUser ($user = $title, $password = "") {
-    Service['start_mysql'] -> AddMysqlUser["$title"]
+    Mdbe::Helper::Mysql_start['before_users_setup'] -> AddMysqlUser["$title"]
 
     mysql_user { "$title":
       name          => "$user",
@@ -122,6 +132,18 @@ class mdbe::provision::configuration (
     }
   }
 
+  augeas { '/etc/my.cnf_mysqld_section':
+    context => "/files$_mysql_conf_file",
+    changes => ["set target[last()+1] [mysqld]"],
+    onlyif  => "match target[. = mysqld] size == 0",
+  }
+
+  augeas { '/etc/my.cnf_datadir':
+    context => "/files$_mysql_conf_file",
+    changes => ["set target[. = '[mysqld]']/datadir /var/lib/mysql"],
+    require  => Augeas['/etc/my.cnf_mysqld_section'],
+  }
+
   file { 'mariadb conf.dir':
     ensure => directory,
     path   => "$manage_mysql_conf_dir",
@@ -135,23 +157,23 @@ class mdbe::provision::configuration (
   }
 
   if $update_users {
-    service { 'start_mysql':
-      binary  => '/etc/init.d/mysql',
-      ensure  => running,
-      start   => '/etc/init.d/mysql start',
-      require => File['skysql-galera'],
-    }
+    mdbe::helper::mysql_start { 'before_users_setup': require => File['skysql-galera'], }
 
     addMysqlUser { "${rep_user}@%": password => "$manage_rep_password", }
+
     addMysqlUser { "${rep_user}@localhost": password => "$manage_rep_password", }
 
     addMysqlUser { "${db_user}@%": password => "$manage_db_password", }
 
-    grantAll { ["${rep_user}@%", "${rep_user}@localhost", "${db_user}@%"]: }
+    grantAll { [
+      "${rep_user}@%",
+      "${rep_user}@localhost",
+      "${db_user}@%"]:
+    }
 
     anchor { 'mysql::server::end': }
 
-    class { '::mysql::server::account_security': require => Service['start_mysql'], }
+    class { '::mysql::server::account_security': require => Mdbe::Helper::Mysql_start['before_users_setup'], }
 
     mdbe::helper::mysql_stop { 'after_users_setup':
       require => [

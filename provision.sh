@@ -90,7 +90,7 @@ done
 if [[ ! -z "$sshPassword" ]] ; then
     ssh_cmd="sshpass -p $sshPassword ssh -t $nodeIP"
     scp_cmd="sshpass -p $sshPassword scp -r"
-elif [[ ! -z "$sshKey" ]] ;  then
+elif [[ ! -z "$sshKey" ]] ; then
     ssh_cmd="ssh -i $sshKey -t $nodeIP"
     scp_cmd="scp -i $sshKey -r"
 else
@@ -107,29 +107,8 @@ else
     wsrep_opt="--wsrep_cluster_address=gcomm://${clusterIP}"
 fi
 
-# get remote os family
-status=$($ssh_cmd "ls /etc/debian_version")
-if [ "x$?" == "x0" ]; then
-    osfamily=debian
-fi
-status=$($ssh_cmd "ls /etc/redhat-release")
-if [ "x$?" == "x0" ]; then
-    osfamily=redhat
-fi
-if [ -z "$osfamily" ] ; then
-    log_error "Unsupported distribution"
-    exit 1
-fi
-
-if [[ "$osfamily" == "debian" ]] ; then
-    install_cmd="sudo aptitude -y install"
-elif [[ "$osfamily" == "redhat" ]] ; then
-    install_cmd="sudo yum -y install"
-fi
-
 # execute commands
 $scp_cmd MariaDB-Manager-provisioning ${nodeIP}:~/
 $ssh_cmd "sudo MariaDB-Manager-provisioning/install-puppet.sh;
 	  sudo puppet apply MariaDB-Manager-provisioning/start.pp;
-#          sudo MariaDB-Manager-provisioning/configure.sh $repUser $repPassword $dbUser $dbPassword;
           sudo /etc/init.d/mysql start $wsrep_opt "
