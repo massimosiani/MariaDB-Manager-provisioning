@@ -152,7 +152,7 @@ class mdbe::provision::configuration (
   # Debian does seem to explicitly include the datadir option by default
   if $::osfamily =~ /(?i)(redhat)/ {
     exec { 'ensure mysqld':
-      command => "echo [mysqld] >> $_mysql_conf_file",
+      command => "sed -i '1i[mysqld]' $_mysql_conf_file",
       onlyif  => "test $(grep -q '\[mysqld\]' $_mysql_conf_file; echo $?) -ne 0",
       path    => $::path,
       require => Class['mariadb'],

@@ -103,12 +103,15 @@ ssh-keyscan ${nodeIP##*@} >> $HOME/.ssh/known_hosts
 # set galera options
 if [[ -z "$clusterIP" ]] ; then
     wsrep_opt="--wsrep-new-cluster"
+    start_script="start_first_node.pp"
 else
     wsrep_opt="--wsrep_cluster_address=gcomm://${clusterIP}"
+    start_script="start_second_node.pp"
+    extra="rm -f /var/lib/mysql/*"
 fi
 
 # execute commands
 $scp_cmd MariaDB-Manager-provisioning ${nodeIP}:~/
 $ssh_cmd "sudo MariaDB-Manager-provisioning/install-puppet.sh;
-	  sudo puppet apply MariaDB-Manager-provisioning/start.pp;
-          sudo /etc/init.d/mysql start $wsrep_opt"
+	  sudo puppet apply MariaDB-Manager-provisioning/${start_script};
+          ${extra} &>/dev/null;sudo /etc/init.d/mysql start $wsrep_opt"
