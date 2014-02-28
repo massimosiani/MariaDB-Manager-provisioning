@@ -132,16 +132,36 @@ class mdbe::provision::configuration (
     }
   }
 
+# TODO: fix the 'Save failed' error
+/*
+************************************************************************************
   augeas { '/etc/my.cnf_mysqld_section':
     context => "/files$_mysql_conf_file",
-    changes => ["set target[last()+1] [mysqld]"],
-    onlyif  => "match target[. = mysqld] size == 0",
+    changes => "set target[last()+1] [mysqld]",
+#    onlyif  => "match target[. = mysqld] size == 0",
   }
 
   augeas { '/etc/my.cnf_datadir':
     context => "/files$_mysql_conf_file",
-    changes => ["set target[. = '[mysqld]']/datadir /var/lib/mysql"],
+    changes => "set target[. = '[mysqld]']/datadir /var/lib/mysql",
     require  => Augeas['/etc/my.cnf_mysqld_section'],
+  }
+************************************************************************************
+*/
+
+# Debian does seem to explicitly include the datadir option by default
+  if $::osfamily =~ /(?i)(redhat)/ {
+    exec { 'ensure mysqld':
+      command => 'echo [mysqld] >> /etc/my.cnf',
+      onlyif  => 'test $(grep -q "\[mysqld\]" /etc/my.cnf; echo $?) -ne 0',
+      path    => $::path,
+      require => Class['mariadb'],
+    }
+    exec { 'ensure datadir':
+      command => 'sed -i "/datadir/d ; /\[mysqld\]/a datadir=/var/lib/mysql" /etc/my.cnf',
+      path    => $::path,
+      require => Exec['ensure mysqld'],
+    }
   }
 
   file { 'mariadb conf.dir':

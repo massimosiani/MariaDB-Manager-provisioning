@@ -52,19 +52,19 @@ class mdbe::provision::install_packages (
   $extra_packages = undef
 ) {
 
-  $mariadb_client = $::operatingsystem ? {
+  $_mariadb_client = $::operatingsystem ? {
     /(?i)(centos|redhat)/ => "MariaDB-client",
     /(?i)(ubuntu|debian)/ => "mariadb-client",
     default               => "MariaDB-client",
   }
 
-  $manage_netcat = $::osfamily ? {
+  $_netcat = $::osfamily ? {
     /(?i)(redhat)/ => "nc",
     /(?i)(debian)/ => "netcat",
     default        => "netcat",
   }
 
-  $packages_needed = [ "curl", "percona-xtrabackup", "$manage_netcat", "$mariadb_client" ]
+  $packages_needed = [ "curl", "percona-xtrabackup", "$_netcat", "$_mariadb_client" ]
 
 
   class { 'mariadb':
@@ -77,15 +77,6 @@ class mdbe::provision::install_packages (
   package { $packages_needed:
     ensure  => "present",
     require => Class['mariadb'],
-  }
-
-  # Debian does seem to explicitly include the datadir option by default
-  if $::osfamily =~ /(?i)(redhat)/ {
-    exec { 'sure datadir':
-      command => 'sed -i "/datadir/d ; /\[mysqld\]/a datadir=/var/lib/mysql" /etc/my.cnf',
-      path    => $::path,
-      require => Class['mariadb'],
-    }
   }
 
 }

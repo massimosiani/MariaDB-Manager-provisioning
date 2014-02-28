@@ -111,4 +111,4 @@ fi
 $scp_cmd MariaDB-Manager-provisioning ${nodeIP}:~/
 $ssh_cmd "sudo MariaDB-Manager-provisioning/install-puppet.sh;
 	  sudo puppet apply MariaDB-Manager-provisioning/start.pp;
-          sudo /etc/init.d/mysql start $wsrep_opt "
+          sudo /etc/init.d/mysql start $wsrep_opt"
