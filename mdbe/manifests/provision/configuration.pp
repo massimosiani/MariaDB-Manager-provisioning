@@ -153,13 +153,13 @@ class mdbe::provision::configuration (
   if $::osfamily =~ /(?i)(redhat)/ {
     exec { 'ensure mysqld':
       command => "echo [mysqld] >> $_mysql_conf_file",
-      onlyif  => "test $(grep -q \[mysqld\] $_mysql_conf_file; echo $?) -ne 0",
+      onlyif  => "test $(grep -q '\[mysqld\]' $_mysql_conf_file; echo $?) -ne 0",
       path    => $::path,
       require => Class['mariadb'],
     }
 
     exec { 'ensure datadir':
-      command => "sed -i \"/\[mysqld\]/a datadir=/var/lib/mysql\" $_mysql_conf_file",
+      command => "sed -i '/\[mysqld\]/a datadir=/var/lib/mysql' $_mysql_conf_file",
       onlyif  => "test $(grep -q datadir $_mysql_conf_file; echo $?) -ne 0",
       path    => $::path,
       require => Exec['ensure mysqld'],

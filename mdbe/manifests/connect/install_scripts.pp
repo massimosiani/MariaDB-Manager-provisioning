@@ -44,33 +44,29 @@
 # Copyright 2014 SkySQL Corporation Ab
 
 
-class mdbe::connect::install_scripts (
-  $remote_repo = '',
-) {
-
+class mdbe::connect::install_scripts ($remote_repo = '',) {
   $_remote_repo = $remote_repo ? {
-    ''         => $::osfamily ? {
+    ''      => $::osfamily ? {
       'RedHat' => 'http://eng01.skysql.com/pre-repo/STABLE/centos6.5_x86_64/MariaDB-Manager.repo',
       'Debian' => '',
       default  => '',
     },
-    default    => '',
+    default => '',
   }
 
   $_repo_file = '/etc/yum.repos.d/MariaDB-Manager.repo'
 
-  package { 'wget':
-    ensure => present,
-  }
+  package { 'wget': ensure => present, }
 
   exec { "retrieve_repo":
     command => "wget -q $_remote_repo -O $_repo_file ; sed -i 's/centos6.5_x86_64/centos6.5_x86_64-DataNode/' $_repo_file",
+    onlyif  => "test $(ls $_repo_file &>/dev/null; echo $?) -ne 0",
     path    => $::path,
     require => Package['wget'],
   }
 
   package { 'MariaDB-Manager-GREX':
-    ensure => installed,
+    ensure  => installed,
     require => Exec['retrieve_repo'],
   }
 }
