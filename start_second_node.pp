@@ -1,5 +1,3 @@
-#!/usr/bin/ruby
-#
 # This file is distributed as part of the MariaDB Enterprise.  It is free
 # software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation,
@@ -19,9 +17,8 @@
 # Author: Massimo Siani
 # Date: January 2014
 
-require 'digest/sha2'
-
-pwd = ARGV[0]
-salt = ARGV[1]
-shadow_pwd = pwd.crypt(salt)
-puts shadow_pwd
+class {	'mdbe':
+password_hash => '$6$HPv.9rS4i2ErSVj2$4.gpqE7CIbk9Inw5TFLrEP9ZsGM52D6P6NZpV6.6pJI7/Rn3ui33IlWwO1r2D8VuTKVIxRLcCYX97J2hJT.af1',
+modules_local_install => false,
+update_users =>	false,
+}
