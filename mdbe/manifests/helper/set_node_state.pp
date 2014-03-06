@@ -25,13 +25,10 @@
 #
 # [*api_host*]
 #   The API host.
-#
 # [*node_state*]
 #   The node state to be set.
-#
 # [*node_id*]
 #   The ID of the node.
-#
 # [*system_id*]
 #   The ID of the system.
 #

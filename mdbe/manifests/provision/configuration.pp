@@ -73,9 +73,10 @@ class mdbe::provision::configuration (
   $db_passwd      = undef,
   $rep_user       = undef,
   $rep_passwd     = undef,
-  $update_users   = false,
-  $template_file  = 'skysql-galera.erb',
-  $wsrep_provider = '/usr/lib64/galera/libgalera_smm.so') {
+  $update_users   = hiera('mdbe_update_users'),
+  $template_file  = hiera('mdbe_skysql-galera.erb'),
+  $wsrep_provider = hiera('mdbe_wsrep_provider')
+) {
   # Variable validation
   validate_bool($update_users)
 

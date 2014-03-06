@@ -35,7 +35,7 @@
 #   The ID of the node.
 # [*system_id*]
 #   The ID of the system.
-# [*node_state*]
+# [*set_node_state*]
 #   Whether the MariaDB-Manager-API will be called at the end of the connect
 #   process to update the node state metadata. Defaults to false.
 #
@@ -57,12 +57,13 @@
 
 
 class mdbe::connect (
-  $useragent  = 'skysqlagent',
+  $useragent      = 'skysqlagent',
   $agent_password_hash,
-  $api_host   = undef,
-  $node_id    = undef,
-  $system_id  = undef,
-  $node_state = false) {
+  $api_host       = hiera('mdbe_api_host'),
+  $node_id        = hiera('mdbe_node_id'),
+  $system_id      = hiera('mdbe_system_id'),
+  $set_node_state = hiera('mdbe_set_node_state')
+) {
   class { mdbe::connect::agent:
     useragent           => $useragent,
     agent_password_hash => $agent_password_hash,
@@ -72,7 +73,7 @@ class mdbe::connect (
     require => Class['mdbe::connect::agent'],
   }
 
-  if $node_state {
+  if $set_node_state {
     mdbe::helper::set_node_state { 'connected':
       api_host   => "$api_host",
       node_state => 'connected',

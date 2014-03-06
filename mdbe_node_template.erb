@@ -19,9 +19,11 @@
 
 
 ---
-api_host: <%= api_host %>
-node_id: <%= @node_id %>
-system_id: <%= @system_id %>
+# common
+mdbe_set_node_state: <%= @set_node_state %>
+mdbe_api_host: <%= @api_host %>
+mdbe_node_id: <%= @node_id %>
+mdbe_system_id: <%= @system_id %>
 
 # mdbe::connect::agent
 
@@ -30,4 +32,4 @@ system_id: <%= @system_id %>
 # mdbe::provision::install_packages
 
 # mdbe::provision::configuration
-update_users: false
+mdbe_update_users: false

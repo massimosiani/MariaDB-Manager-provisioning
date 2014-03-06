@@ -55,18 +55,17 @@ class mdbe::provision (
   $db_passwd      = undef,
   $rep_user       = undef,
   $rep_passwd     = undef,
-  $update_users   = false,
-  $template_file  = undef,
-  $api_host       = undef,
-  $node_id        = undef,
-  $system_id      = undef,
-  $node_state     = false,
-  $wsrep_provider = '/usr/lib64/galera/libgalera_smm.so'
+  $update_users   = hiera('mdbe_update_users'),
+  $template_file  = hiera('mdbe_template_file'),
+  $api_host       = hiera('mdbe_api_host'),
+  $node_id        = hiera('mdbe_node_id'),
+  $system_id      = hiera('mdbe_system_id'),
+  $set_node_state = hiera('mdbe_set_node_state'),
+  $wsrep_provider = hiera('mdbe_wsrep_provider')
 ) {
-
   # Variable validation
   validate_bool($update_users)
-  validate_bool($node_state)
+  validate_bool($set_node_state)
 
   class { 'mdbe::provision::install_packages':
     packages       => $packages,
@@ -85,7 +84,7 @@ class mdbe::provision (
   }
 
   # Set the node state
-  if $node_state {
+  if $set_node_state {
     mdbe::helper::set_node_state { 'provisioned':
       api_host   => "$api_host",
       node_state => 'provisioned',

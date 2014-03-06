@@ -48,10 +48,10 @@
 class mdbe (
   $useragent             = 'skysqlagent',
   $password_hash,
-  $api_host              = undef,
-  $node_id               = undef,
-  $system_id             = undef,
-  $node_state            = false,
+  $api_host              = hiera('mdbe_api_host'),
+  $node_id               = hiera('mdbe_node_id'),
+  $system_id             = hiera('mdbe_system_id'),
+  $set_node_state        = hiera('mdbe_set_node_state'),
   $modules_local_install = false,
   $modules_local_source  = undef,
   $puppet_modules_path   = undef,
@@ -59,13 +59,12 @@ class mdbe (
   $db_passwd             = undef,
   $rep_user              = undef,
   $rep_passwd            = undef,
-  $wsrep_provider        = undef,
+  $wsrep_provider        = hiera('mdbe_wsrep_provider'),
   $packages              = undef,
   $extra_packages        = undef,
-  $update_users          = false,
-  $template_file         = undef
+  $update_users          = hiera('mdbe_update_users'),
+  $template_file         = hiera('mdbe_template_file')
 ) {
-
   # Variables validation
   $_puppet_modules_path = $puppet_modules_path ? {
     /.+/    => $puppet_modules_path,
@@ -90,7 +89,7 @@ class mdbe (
     api_host            => $api_host,
     node_id             => $node_id,
     system_id           => $system_id,
-    node_state          => $node_state,
+    set_node_state      => $set_node_state,
   }
 
   class { mdbe::provision:
@@ -99,6 +98,9 @@ class mdbe (
     rep_user     => $rep_user,
     rep_passwd   => $rep_passwd,
     update_users => $update_users,
+    api_host     => undef,
+    node_id      => undef,
+    system_id    => undef,
   }
 
 }

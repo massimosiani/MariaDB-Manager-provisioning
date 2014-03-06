@@ -20,9 +20,10 @@
 
 ---
 # common
-api_host: "puppet"
-node_id: 1
-system_id: 1
+mdbe_set_node_state: false
+mdbe_api_host: "puppet"
+mdbe_node_id: 1
+mdbe_system_id: 1
 
 # mdbe::connect::agent
 
@@ -31,6 +32,6 @@ system_id: 1
 # mdbe::provision::install_packages
 
 # mdbe::provision::configuration
-template_file: "skysql_galera.erb"
-update_users: false
-wsrep_provider: "/usr/lib64/galera/libgalera_smm.so"
+mdbe_template_file: "skysql_galera.erb"
+mdbe_update_users: false
+mdbe_wsrep_provider: "/usr/lib64/galera/libgalera_smm.so"
