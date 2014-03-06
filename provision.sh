@@ -126,4 +126,5 @@ puppet agent --test
 
 sleep 5
 #puppet cert sign $agent_fqdn
+MariaDB-Manager-provisioning/write_site.sh $agent_fqdn
 $ssh_cmd "puppet agent --test"
