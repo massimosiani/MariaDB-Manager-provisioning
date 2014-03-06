@@ -112,7 +112,7 @@ fi
 
 # execute commands
 $scp_cmd MariaDB-Manager-provisioning/*.sh ${nodeIP}:~/
-$ssh_cmd "sudo ./install-puppet.sh ; puppet resource service iptables ensure=stopped"
+$ssh_cmd "sudo ./install-puppet.sh ; puppet resource service iptables ensure=stopped ; setenforce 0"
 agent_fqdn=$($ssh_cmd "facter fqdn")
 if ! grep -q $agent_fqdn /etc/puppet/autosign.conf ; then
     echo $agent_fqdn >> /etc/puppet/autosign.conf
