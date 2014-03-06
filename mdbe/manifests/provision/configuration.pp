@@ -74,16 +74,16 @@ class mdbe::provision::configuration (
   $rep_user       = undef,
   $rep_passwd     = undef,
   $update_users   = hiera('mdbe_update_users'),
-  $template_file  = hiera('mdbe_skysql-galera.erb'),
+  $template_file  = hiera('mdbe_template_file'),
   $wsrep_provider = hiera('mdbe_wsrep_provider')
 ) {
   # Variable validation
   validate_bool($update_users)
 
-  $manage_rep_user = $rep_user
-  $manage_rep_password = $rep_passwd
-  $manage_db_user = $db_user
-  $manage_db_password = $db_passwd
+  $_rep_user = $rep_user
+  $_rep_password = $rep_passwd
+  $_db_user = $db_user
+  $_db_password = $db_passwd
 
   $_template_file = $template_file ? {
     /w+/    => $template_file,
@@ -96,7 +96,7 @@ class mdbe::provision::configuration (
     default        => "/etc/my.cnf",
   }
 
-  $manage_mysql_conf_dir = $::osfamily ? {
+  $_mysql_conf_dir = $::osfamily ? {
     /(?i)(redhat)/ => "/etc/my.cnf.d",
     /(?i)(debian)/ => "/etc/mysql/conf.d",
     default        => "/etc/my.cnf.d",
@@ -169,24 +169,24 @@ class mdbe::provision::configuration (
 
   file { 'mariadb conf.dir':
     ensure => directory,
-    path   => "$manage_mysql_conf_dir",
+    path   => "$_mysql_conf_dir",
     before => File['skysql-galera'],
   }
 
   file { 'skysql-galera':
     ensure  => present,
-    path    => "${manage_mysql_conf_dir}/skysql-galera.cnf",
+    path    => "$_mysql_conf_dir/skysql-galera.cnf",
     content => template("mdbe/$_template_file"),
   }
 
   if $update_users {
     mdbe::helper::mysql_start { 'before_users_setup': require => File['skysql-galera'], }
 
-    addMysqlUser { "${rep_user}@%": password => "$manage_rep_password", }
+    addMysqlUser { "$_rep_user@%": password => "_rep_password", }
 
-    addMysqlUser { "${rep_user}@localhost": password => "$manage_rep_password", }
+    addMysqlUser { "$_rep_user@localhost": password => "$_rep_password", }
 
-    addMysqlUser { "${db_user}@%": password => "$manage_db_password", }
+    addMysqlUser { "$_db_user@%": password => "$_db_password", }
 
     grantAll { [
       "${rep_user}@%",

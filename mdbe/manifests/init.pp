@@ -98,9 +98,9 @@ class mdbe (
     rep_user     => $rep_user,
     rep_passwd   => $rep_passwd,
     update_users => $update_users,
-    api_host     => undef,
-    node_id      => undef,
-    system_id    => undef,
+    api_host     => $api_host,
+    node_id      => $node_id,
+    system_id    => $system_id,
   }
 
 }
