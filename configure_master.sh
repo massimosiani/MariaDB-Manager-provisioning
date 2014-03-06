@@ -1,3 +1,4 @@
+#!/bin/bash
 # This file is distributed as part of the MariaDB Enterprise.  It is free
 # software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation,
@@ -12,17 +13,18 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# Copyright 2012-2014 SkySQL Ab
+# Copyright 2014 SkySQL Ab
 #
 # Author: Massimo Siani
-# Date: January 2014
+# Date: March 2014
 
-class {	'mdbe':
-password_hash => '$6$HPv.9rS4i2ErSVj2$4.gpqE7CIbk9Inw5TFLrEP9ZsGM52D6P6NZpV6.6pJI7/Rn3ui33IlWwO1r2D8VuTKVIxRLcCYX97J2hJT.af1',
-modules_local_install => false,
-# the users are also used in the template configuration file
-db_user => 'dbuser',
-db_passwd => 'dbuser1',
-rep_user => 'repluser',
-rep_passwd => 'repluser1',
-}
+
+rpm -ivh https://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-7.noarch.rpm
+yum -y install puppet puppet-server
+cp MariaDB-Manager-provisioning/hiera.yaml /etc/puppet/
+mkdir /etc/puppet/hieradata
+cp MariaDB-Manager-provisioning/mdbe_common.yaml /etc/puppet/hieradata/
+
+nano /etc/puppet/manifests/site.pp
+puppet resource service iptables ensure=stopped
+puppet resource service puppetmaster ensure=running

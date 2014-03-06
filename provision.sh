@@ -14,7 +14,7 @@
 # this program; if not, write to the Free Software Foundation, Inc., 51
 # Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
-# Copyright 2012-2014 SkySQL Ab
+# Copyright 2014 SkySQL Ab
 #
 # Author: Massimo Siani
 # Date: January 2014
@@ -111,7 +111,19 @@ else
 fi
 
 # execute commands
-$scp_cmd MariaDB-Manager-provisioning ${nodeIP}:~/
-$ssh_cmd "sudo MariaDB-Manager-provisioning/install-puppet.sh;
-	  sudo puppet apply MariaDB-Manager-provisioning/${start_script};
-          ${extra} &>/dev/null;sudo /etc/init.d/mysql start $wsrep_opt"
+$scp_cmd MariaDB-Manager-provisioning/*.sh ${nodeIP}:~/
+$ssh_cmd "sudo ./install-puppet.sh ; puppet resource service iptables ensure=stopped"
+agent_fqdn=$($ssh_cmd "facter fqdn")
+if ! grep -q $agent_fqdn /etc/puppet/autosign.conf ; then
+    echo $agent_fqdn >> /etc/puppet/autosign.conf
+fi
+masterIP=$(facter ipaddress)
+$ssh_cmd "if ! grep -q $masterIP /etc/hosts ; then
+    echo \"$masterIP    puppet.localdomain puppet\" >> /etc/hosts
+fi
+puppet agent --test
+"
+
+sleep 5
+#puppet cert sign $agent_fqdn
+$ssh_cmd "puppet agent --test"
