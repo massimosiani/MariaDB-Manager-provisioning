@@ -114,8 +114,7 @@ fi
 $scp_cmd MariaDB-Manager-provisioning/*.sh ${nodeIP}:~/
 $ssh_cmd "sudo ./install-puppet.sh ; puppet resource service iptables ensure=stopped ; setenforce 0"
 agent_fqdn=$($ssh_cmd "facter fqdn")
-agent_fqdn=$(echo $agent_fqdn | sed 's/
-//g')
+agent_fqdn=$(echo $agent_fqdn | sed 's/\r//g')
 if ! grep -q $agent_fqdn /etc/puppet/autosign.conf ; then
     echo $agent_fqdn >> /etc/puppet/autosign.conf
 fi
@@ -123,10 +122,7 @@ masterIP=$(facter ipaddress)
 $ssh_cmd "if ! grep -q $masterIP /etc/hosts ; then
     echo \"$masterIP    puppet.localdomain puppet\" >> /etc/hosts
 fi
-puppet agent --test
 "
 
-sleep 5
-#puppet cert sign $agent_fqdn
 MariaDB-Manager-provisioning/write_site.sh $agent_fqdn
 $ssh_cmd "puppet agent --test"
