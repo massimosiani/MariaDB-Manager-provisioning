@@ -25,6 +25,6 @@ cp MariaDB-Manager-provisioning/hiera.yaml /etc/puppet/
 mkdir /etc/puppet/hieradata
 cp MariaDB-Manager-provisioning/mdbe_common.yaml /etc/puppet/hieradata/
 
-nano /etc/puppet/manifests/site.pp
+touch /etc/puppet/manifests/site.pp
 puppet resource service iptables ensure=stopped
 puppet resource service puppetmaster ensure=running
